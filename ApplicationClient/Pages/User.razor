@@ -1,0 +1,70 @@
+﻿@page "/user"
+@using Microsoft.AspNetCore.Authorization
+@inject HttpClient Http
+@attribute [Authorize]
+
+<PageTitle>User</PageTitle>
+
+<h2>List of all users</h2>
+@if (Users == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Surname</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Users)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Name</td>
+                    <td>@user.Surname</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<br />
+
+@if (Users != null)
+{
+    <h2>Add new user to list</h2>
+    <EditForm Model="@AddNewUserCommand" OnValidSubmit="@AddUser">
+        <div class="form-group mb-2 col-12 col-md-6 col-lg-3">
+            <label class="form-label" for="name">Name:</label>
+            <InputText class="form-control" id="name" @bind-Value="AddNewUserCommand.Name" />
+        </div>
+        <div class="form-group mb-2 col-12 col-md-6 col-lg-3">
+            <label class="form-label" for="surname">Surname:</label>
+            <InputText class="form-control" id="surname" @bind-Value="AddNewUserCommand.Surname" />
+        </div>
+        <button type="submit" class="btn btn-primary">Add User</button>
+    </EditForm>
+}
+
+@code {
+    private Shared.AuthApi.User AddNewUserCommand { get; set; } = new();
+    private Shared.AuthApi.User[]? Users { get; set; }
+
+    protected override async Task OnInitializedAsync()
+        => Users = await Http.GetFromJsonAsync<Shared.AuthApi.User[]>("user-api/user/all");
+
+    private async Task AddUser()
+    {
+        var response = await Http.PostAsJsonAsync("user-api/user/add", AddNewUserCommand);
+        if (response.IsSuccessStatusCode)
+        {
+            Users = await Http.GetFromJsonAsync<Shared.AuthApi.User[]>("user-api/user/all");
+            AddNewUserCommand = new Shared.AuthApi.User();
+        }
+    }
+}

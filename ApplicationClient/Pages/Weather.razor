@@ -1,13 +1,13 @@
 ﻿@page "/weather"
+@using Microsoft.AspNetCore.Authorization
+@using Shared.WeatherApi
 @inject HttpClient Http
+@attribute [Authorize]
 
 <PageTitle>Weather</PageTitle>
 
-<h1>Weather</h1>
-
-<p>This component demonstrates fetching data from the server.</p>
-
-@if (forecasts == null)
+<h2>List of all weather forecasts</h2>
+@if (WeatherForecasts == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -16,6 +16,7 @@ else
     <table class="table">
         <thead>
             <tr>
+                <th>Id</th>
                 <th>Date</th>
                 <th aria-label="Temperature in Celsius">Temp. (C)</th>
                 <th aria-label="Temperature in Farenheit">Temp. (F)</th>
@@ -23,9 +24,10 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var forecast in WeatherForecasts)
             {
                 <tr>
+                    <td>@forecast.Id</td>
                     <td>@forecast.Date.ToShortDateString()</td>
                     <td>@forecast.TemperatureC</td>
                     <td>@forecast.TemperatureF</td>
@@ -36,22 +38,45 @@ else
     </table>
 }
 
+<br />
+
+<h2>Weather forecast selected by Id (@SelectedWeatherForecastId)</h2>
+@if (WeatherForecast == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th aria-label="Temperature in Celsius">Temp. (C)</th>
+                <th aria-label="Temperature in Farenheit">Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@WeatherForecast.Id</td>
+                <td>@WeatherForecast.Date.ToShortDateString()</td>
+                <td>@WeatherForecast.TemperatureC</td>
+                <td>@WeatherForecast.TemperatureF</td>
+                <td>@WeatherForecast.Summary</td>
+            </tr>
+        </tbody>
+    </table>
+}
+
 @code {
-    private WeatherForecast[]? forecasts;
+    private WeatherForecast[]? WeatherForecasts { get; set; }
+    private WeatherForecast? WeatherForecast { get; set; }
+    private int SelectedWeatherForecastId { get; set; } = 2;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-    }
-
-    public class WeatherForecast
-    {
-        public DateOnly Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string? Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        WeatherForecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("weather-api/weatherforecast/predictions");
+        WeatherForecast = await Http.GetFromJsonAsync<WeatherForecast>($"weather-api/weatherforecast/predictions/{SelectedWeatherForecastId}");
     }
 }
