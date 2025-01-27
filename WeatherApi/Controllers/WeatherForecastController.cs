@@ -6,10 +6,7 @@ namespace WeatherApi.Controllers;
 
 public class WeatherForecastController : ApiControllerBase
 {
-    private static readonly string[] _summaries =
-    [
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    ];
+    private static readonly string[] _summaries = [ "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" ];
 
     private static readonly WeatherForecast[] _weatherForecasts =
         Enumerable.Range(1, 5)

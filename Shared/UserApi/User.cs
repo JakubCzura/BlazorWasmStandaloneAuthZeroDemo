@@ -1,4 +1,4 @@
-﻿namespace Shared.AuthApi;
+﻿namespace Shared.UserApi;
 
 public class User
 {

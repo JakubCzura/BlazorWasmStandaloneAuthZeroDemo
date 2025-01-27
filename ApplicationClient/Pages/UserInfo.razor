@@ -1,0 +1,83 @@
+﻿@page "/user/info"
+@using Microsoft.AspNetCore.Authorization
+@using Shared.Auth
+@inject HttpClient Http
+@attribute [Authorize(Roles = "admin, user")]
+
+<PageTitle>Users' info</PageTitle>
+
+<h2>List of all users with additional info</h2>
+@if (Users == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>E-mail</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Users)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Name</td>
+                    <td>@user.Surname</td>
+                    <td>@user.Email</td>
+                    <td>@user.Phone</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<br />
+
+@if (Users != null)
+{
+    <h2>Add new user to list</h2>
+    <EditForm Model="@AddNewUserCommand" OnValidSubmit="@AddUser">
+        <div class="form-group mb-2 col-12 col-md-6 col-lg-3">
+            <label class="form-label" for="name">Name:</label>
+            <InputText class="form-control" id="name" @bind-Value="AddNewUserCommand.Name" />
+        </div>
+        <div class="form-group mb-2 col-12 col-md-6 col-lg-3">
+            <label class="form-label" for="surname">Surname:</label>
+            <InputText class="form-control" id="surname" @bind-Value="AddNewUserCommand.Surname" />
+        </div>
+        <div class="form-group mb-2 col-12 col-md-6 col-lg-3">
+            <label class="form-label" for="email">E-mail:</label>
+            <InputText class="form-control" id="email" @bind-Value="AddNewUserCommand.Email" />
+        </div>
+        <div class="form-group mb-2 col-12 col-md-6 col-lg-3">
+            <label class="form-label" for="phone">Phone:</label>
+            <InputText class="form-control" id="phone" @bind-Value="AddNewUserCommand.Phone" />
+        </div>
+        <button type="submit" class="btn btn-primary">Add User</button>
+    </EditForm>
+}
+
+@code {
+    private Shared.UserApi.UserInfo AddNewUserCommand { get; set; } = new();
+    private Shared.UserApi.UserInfo[]? Users { get; set; }
+
+    protected override async Task OnInitializedAsync()
+        => Users = await Http.GetFromJsonAsync<Shared.UserApi.UserInfo[]>("user-api/user/all/info");
+
+    private async Task AddUser()
+    {
+        var response = await Http.PostAsJsonAsync("user-api/user/add", AddNewUserCommand);
+        if (response.IsSuccessStatusCode)
+        {
+            Users = await Http.GetFromJsonAsync<Shared.UserApi.UserInfo[]>("user-api/user/all/info");
+            AddNewUserCommand = new Shared.UserApi.UserInfo();
+        }
+    }
+}
