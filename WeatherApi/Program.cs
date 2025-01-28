@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Shared.Auth;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,9 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["Auth0:Authority"]!
     };
 });
+
+builder.Services.AddAuthorizationBuilder()
+                .AddPolicy(PolicyConstants.GetWeather, policy => policy.RequireClaim(ClaimConstants.Permissions, PermissionConstants.ReadWeather));
 
 WebApplication app = builder.Build();
 

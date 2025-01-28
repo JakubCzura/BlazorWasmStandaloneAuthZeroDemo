@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Shared.Auth;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -18,15 +19,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddCors(options =>
+builder.Services.AddAuthorization();
+
+builder.Services.AddCors(options => options.AddPolicy(CorsPolicyConstants.ClientApplication, policy =>
 {
-    options.AddPolicy("allow-cors",
-                      policy =>
-                      {
-                          policy.WithOrigins("https://localhost:7249")
-                                .AllowAnyHeader();
-                      });
-});
+    policy.WithOrigins("https://localhost:7249")
+          .AllowAnyHeader();
+}));
 
 builder.Services.AddReverseProxy()
                 .LoadFromConfig(builder.Configuration.GetSection("ApiGateway"));
@@ -35,7 +34,7 @@ WebApplication app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.UseCors("allow-cors");
+app.UseCors(CorsPolicyConstants.ClientApplication);
 
 app.UseAuthentication();
 

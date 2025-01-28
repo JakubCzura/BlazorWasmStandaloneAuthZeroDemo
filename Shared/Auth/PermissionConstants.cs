@@ -9,4 +9,9 @@ public class PermissionConstants
     /// Permission to read users.
     /// </summary>
     public const string ReadUser = "read:user";
+
+    /// <summary>
+    /// Permission to read weather conditions.
+    /// </summary>
+    public const string ReadWeather = "read:weather";
 }

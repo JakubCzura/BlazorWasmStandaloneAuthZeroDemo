@@ -1,8 +1,9 @@
 ﻿@page "/weather"
 @using Microsoft.AspNetCore.Authorization
+@using Shared.Auth
 @using Shared.WeatherApi
 @inject HttpClient Http
-@attribute [Authorize]
+@attribute [Authorize(Policy = PolicyConstants.GetWeather)]
 
 <PageTitle>Weather</PageTitle>
 

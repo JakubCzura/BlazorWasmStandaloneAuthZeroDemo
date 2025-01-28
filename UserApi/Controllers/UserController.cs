@@ -22,6 +22,7 @@ public class UserController : ApiControllerBase
     [Authorize(Roles = "admin, user")]
     public IActionResult GetAllInfo() => Ok(_usersInfo);
 
+    //Anonymous on purpose to test api gateway also for anonymous endpoints
     [HttpPost("add")]
     [AllowAnonymous]
     public IActionResult AddUser([FromBody] UserInfo newUser)

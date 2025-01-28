@@ -9,4 +9,9 @@ public static class PolicyConstants
     /// Policy to get user data.
     /// </summary>
     public const string GetUser = "get-user";
+
+    /// <summary>
+    /// Policy to get weather conditions.
+    /// </summary>
+    public const string GetWeather = "get-weather";
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Auth;
 using Shared.WeatherApi;
 
 namespace WeatherApi.Controllers;
@@ -19,9 +20,11 @@ public class WeatherForecastController : ApiControllerBase
                   })
                   .ToArray();
 
+    [Authorize(Policy = PolicyConstants.GetWeather)]
     [HttpGet("predictions")]
     public IActionResult GetAll() => Ok(_weatherForecasts);
 
+    //Anonymous on purpose to test api gateway also for anonymous endpoints
     [HttpGet("predictions/{id}")]
     [AllowAnonymous]
     public IActionResult GetById([FromRoute] int id) => Ok(_weatherForecasts.First(x => x.Id == id));

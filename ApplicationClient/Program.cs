@@ -33,6 +33,10 @@ builder.Services.AddOidcAuthentication(options =>
     options.ProviderOptions.DefaultScopes.Add("offline_access");
 }).AddAccountClaimsPrincipalFactory<AuthorizedUserFactory>();
 
-builder.Services.AddAuthorizationCore(config => config.AddPolicy(PolicyConstants.GetUser, policy => policy.RequireClaim(ClaimConstants.Permissions, PermissionConstants.ReadUser)));
+builder.Services.AddAuthorizationCore(config =>
+{
+    config.AddPolicy(PolicyConstants.GetUser, policy => policy.RequireClaim(ClaimConstants.Permissions, PermissionConstants.ReadUser));
+    config.AddPolicy(PolicyConstants.GetWeather, policy => policy.RequireClaim(ClaimConstants.Permissions, PermissionConstants.ReadWeather));
+});
 
 await builder.Build().RunAsync();
