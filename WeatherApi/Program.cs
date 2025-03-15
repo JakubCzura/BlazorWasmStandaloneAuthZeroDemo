@@ -26,6 +26,14 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorizationBuilder()
                 .AddPolicy(PolicyConstants.GetWeather, policy => policy.RequireClaim(ClaimConstants.Permissions, PermissionConstants.ReadWeather));
 
+builder.Services.AddCors(options => options.AddPolicy(CorsPolicyConstants.ClientApplication, policy =>
+{
+    policy.WithOrigins("http://localhost:5000", "http://localhost:5001", "https://localhost:5000", "https://localhost:5001")
+          .AllowAnyMethod()
+          .AllowAnyHeader();
+
+}));
+
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,7 +42,9 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+
+app.UseCors(CorsPolicyConstants.ClientApplication);
 
 app.UseAuthentication();
 

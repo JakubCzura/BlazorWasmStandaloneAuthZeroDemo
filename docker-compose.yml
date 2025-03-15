@@ -1,0 +1,74 @@
+version: '3.8'
+
+networks:
+  blazor-network:
+     name: blazor-network
+     driver: bridge     
+       
+services:
+  apigateway:
+    image: ${DOCKER_REGISTRY-}apigateway
+    container_name: apigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    ports:
+      - "5002:5002"
+      - "5003:5003"   
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:5003;http://+:5002
+    networks:
+      - blazor-network
+
+  userapi:
+    image: ${DOCKER_REGISTRY-}userapi
+    container_name: userapi
+    build:
+      context: .
+      dockerfile: UserApi/Dockerfile
+    ports:
+      - "5004:5004"
+      - "5005:5005"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:5005;http://+:5004
+    networks:
+      - blazor-network
+
+  weatherapi:
+    image: ${DOCKER_REGISTRY-}weatherapi
+    container_name: weatherapi
+    build:
+      context: .
+      dockerfile: WeatherApi/Dockerfile
+    ports:
+      - "5006:5006"
+      - "5007:5007"    
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:5007;http://+:5006
+    networks:
+      - blazor-network
+
+  applicationclient:
+    image: ${DOCKER_REGISTRY-}applicationclient
+    container_name: applicationclient
+    build:
+      context: .
+      dockerfile: ApplicationClient/Dockerfile
+    ports:
+      - "5001:80"
+      # - "5000:80"
+      # - "5001:443"
+    networks:
+      - blazor-network

@@ -23,7 +23,8 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options => options.AddPolicy(CorsPolicyConstants.ClientApplication, policy =>
 {
-    policy.WithOrigins("https://localhost:7249")
+    policy.WithOrigins("http://localhost:5000", "http://localhost:5001", "https://localhost:5000", "https://localhost:5001")
+          .AllowAnyMethod()
           .AllowAnyHeader();
 }));
 
@@ -33,6 +34,8 @@ builder.Services.AddReverseProxy()
 WebApplication app = builder.Build();
 
 app.UseHttpsRedirection();
+
+//app.UseHttpsRedirection();
 
 app.UseCors(CorsPolicyConstants.ClientApplication);
 
