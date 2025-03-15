@@ -73,7 +73,7 @@ services:
       context: .
       dockerfile: ApplicationClient/Dockerfile
     ports:
-      - "5001:80"
+      - "5000:80"
       # - "5000:80"
       # - "5001:443"
     # networks:
