@@ -20,7 +20,9 @@ services:
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:5003;http://+:5002
+      - ASPNETCORE_HTTP_PORTS=5002
+      - ASPNETCORE_HTTPS_PORTS=5003
+      # - ASPNETCORE_URLS=https://+:5003;http://+:5002
     networks:
       - blazor-network
 
@@ -38,7 +40,9 @@ services:
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:5005;http://+:5004
+      - ASPNETCORE_HTTP_PORTS=5004
+      - ASPNETCORE_HTTPS_PORTS=5005
+      # - ASPNETCORE_URLS=https://+:5005;http://+:5004
     networks:
       - blazor-network
 
@@ -56,7 +60,9 @@ services:
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:5007;http://+:5006
+      - ASPNETCORE_HTTP_PORTS=5006
+      - ASPNETCORE_HTTPS_PORTS=5007
+      # - ASPNETCORE_URLS=https://+:5007;http://+:5006
     networks:
       - blazor-network
 
