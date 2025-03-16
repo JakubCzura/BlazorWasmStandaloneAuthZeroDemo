@@ -33,8 +33,6 @@ builder.Services.AddReverseProxy()
 
 WebApplication app = builder.Build();
 
-app.UseHttpsRedirection();
-
 //app.UseHttpsRedirection();
 
 app.UseCors(CorsPolicyConstants.ClientApplication);
